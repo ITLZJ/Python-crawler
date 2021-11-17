@@ -7,6 +7,8 @@ from my_fake_useragent import UserAgent as ua
 import pandas as pd
 import numpy as np
 sys.path.append("D:\pythonEdit\Intelligent\scrapy_study\scrapy_student\\")
+from prettytable import PrettyTable
+
 
 def format_msg_table(data_list: list):
     """
@@ -83,11 +85,24 @@ def query_data_from_12306(departure_date: str, source_province_name: str, dst_pr
         query_result.append(msg)
 
     # 信息展示
-    query_show_data = pd.DataFrame(query_result)
-    query_show_data.columns = ["列车车次", "起始站", "终点站", "乘车始站", "乘车末站", "出发时间", "预计到达时间", "历时", "商务座\特等座",
-                        "一等座", "二等座", "高级软卧", "一等卧（软卧）", "动卧", "硬卧（二等卧）", "软座", "硬座", "无座"]
-    query_show_data[query_show_data == ""] = np.nan
-    query_show_data.to_excel('./temp.xlsx')
+
+    # 采用pandas进行展示
+    # query_show_data = pd.DataFrame(query_result)
+    # query_show_data.columns = ["列车车次", "起始站", "终点站", "乘车始站", "乘车末站", "出发时间", "预计到达时间", "历时", "商务座\特等座",
+                        # "一等座", "二等座", "高级软卧", "一等卧（软卧）", "动卧", "硬卧（二等卧）", "软座", "硬座", "无座"]
+    # query_show_data[query_show_data == ""] = np.nan
+    # query_show_data.to_excel('./temp.xlsx')  # 将结果保存到本地或者指定的地方进行缓存
+
+    #  直接输出展示
+    show_table = PrettyTable()
+    show_table.field_names = ["列车车次", "起始站", "终点站", "乘车始站", "乘车末站", "出发时间", "预计到达时间", "历时",
+                              "商务座\特等座","一等座", "二等座", "高级软卧", "一等卧（软卧）", "动卧", "硬卧（二等卧）", "软座",
+                              "硬座", "无座"]
+    for row in query_result:
+        show_table.add_row(row=[i if i else "-" for i in row])
+    show_table.align = "c"
+    show_table.valign = "m"
+    print(show_table)
 #
 if __name__ == '__main__':
     # 查询日期的车次信息
